@@ -1,17 +1,23 @@
 package word
 
 import (
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 	"strings"
 	"unicode"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
+
+// UnderLineToCamelCaseTitle 下划线转驼峰首字母大写
+func UnderLineToCamelCaseTitle(s string) string {
+	s = strings.Replace(s, "_", " ", -1)
+	s = cases.Title(language.Und).String(s)
+	return strings.Replace(s, " ", "", -1)
+}
 
 // UnderLineToCamelCase 下划线转驼峰
 func UnderLineToCamelCase(s string) string {
-	s = strings.Replace(s, "_", " ", -1)
-	s = cases.Title(language.Und).String(s)
-	s = strings.Replace(s, " ", "", -1)
+	s = UnderLineToCamelCaseTitle(s)
 	return string(unicode.ToLower(rune(s[0]))) + s[1:]
 }
 

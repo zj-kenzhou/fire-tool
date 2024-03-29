@@ -2,6 +2,12 @@ package word
 
 import "testing"
 
+func TestUnderLineToCamelCaseTitle(t *testing.T) {
+	str := "aaa_bbb_ccc _ddd"
+	res := UnderLineToCamelCaseTitle(str)
+	t.Log(res)
+}
+
 func TestCamelCaseToCenterLine(t *testing.T) {
 	str := "aaaBaaaCCaaa"
 	res := CamelCaseToCenterLine(str)
