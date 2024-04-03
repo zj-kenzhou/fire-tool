@@ -8,6 +8,12 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+var (
+	validate      *validator.Validate
+	tableNameReg  = regexp.MustCompile("^[A-Z0-9_].{0,30}$")
+	tableFieldRef = regexp.MustCompile("^[a-z0-9_].{0,30}$")
+)
+
 type ErrorResponse struct {
 	FailedField string
 	Tag         string
@@ -15,39 +21,17 @@ type ErrorResponse struct {
 }
 
 func ValidateTableName(fl validator.FieldLevel) bool {
-	res, err := regexp.MatchString("^[A-Z0-9_].{0,30}$", fl.Field().String())
-	if err != nil {
-		return false
-	}
-	if !res {
-		return false
-	}
-	return true
+	res := tableNameReg.MatchString(fl.Field().String())
+	return res
 }
 
 func ValidateField(fl validator.FieldLevel) bool {
-	res, err := regexp.MatchString("^[a-z0-9_].{0,30}$", fl.Field().String())
-	if err != nil {
-		return false
-	}
-	if !res {
-		return false
-	}
-	return true
+	return tableFieldRef.MatchString(fl.Field().String())
 }
 
 func ValidateStruct(param any) []*ErrorResponse {
 	var errorResponses []*ErrorResponse
-	var validate = validator.New()
-	err := validate.RegisterValidation("tableName", ValidateTableName, false)
-	if err != nil {
-		panic(err)
-	}
-	err = validate.RegisterValidation("tableField", ValidateField, false)
-	if err != nil {
-		panic(err)
-	}
-	err = validate.Struct(param)
+	err := validate.Struct(param)
 	if err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			var element ErrorResponse
@@ -70,4 +54,17 @@ func Validate(param any) error {
 		return errors.New(string(res))
 	}
 	return nil
+}
+
+func init() {
+	var validateInstance = validator.New()
+	err := validateInstance.RegisterValidation("tableName", ValidateTableName, false)
+	if err != nil {
+		panic(err)
+	}
+	err = validateInstance.RegisterValidation("tableField", ValidateField, false)
+	if err != nil {
+		panic(err)
+	}
+	validate = validateInstance
 }
