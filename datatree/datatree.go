@@ -1,7 +1,10 @@
 package datatree
 
 import (
+	"reflect"
+
 	"github.com/spf13/cast"
+
 	"github.com/zj-kenzhou/fire-tool/datagroup"
 	"github.com/zj-kenzhou/fire-tool/datamap"
 )
@@ -33,7 +36,11 @@ func toTreeForStruct[T Tree](list *[]T, groupMap map[string][]T) {
 		key := item.GetId()
 		children, ok := groupMap[key]
 		if ok {
-			item.SetChild(&item, children)
+			if reflect.TypeOf(item).Kind() == reflect.Ptr {
+				item.SetChild(item, children)
+			} else {
+				item.SetChild(&item, children)
+			}
 			(*list)[index] = item
 			toTreeForStruct(&children, groupMap)
 		}

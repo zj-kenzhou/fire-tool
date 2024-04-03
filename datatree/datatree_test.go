@@ -1,12 +1,15 @@
 package datatree
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+)
 
 type childItem struct {
 	Name   string
 	Parent string
 	Id     string
-	Child  []childItem
+	Child  []*childItem
 }
 
 func (c childItem) GetParentId() string {
@@ -19,7 +22,7 @@ func (c childItem) GetId() string {
 
 func (c childItem) SetChild(self, item any) {
 	this := self.(*childItem)
-	this.Child = item.([]childItem)
+	this.Child = item.([]*childItem)
 }
 
 func TestMapListToTree(t *testing.T) {
@@ -59,37 +62,38 @@ func TestMapListToTree(t *testing.T) {
 }
 
 func TestListToTree(t *testing.T) {
-	var list []childItem
-	list = append(list, childItem{
+	var list []*childItem
+	list = append(list, &childItem{
 		Name:   "1111",
 		Parent: "0",
 		Id:     "1",
 	})
-	list = append(list, childItem{
+	list = append(list, &childItem{
 		Name:   "222",
 		Parent: "0",
 		Id:     "2",
 	})
-	list = append(list, childItem{
+	list = append(list, &childItem{
 		Name:   "33",
 		Parent: "1",
 		Id:     "3",
 	})
-	list = append(list, childItem{
+	list = append(list, &childItem{
 		Name:   "44",
 		Parent: "1",
 		Id:     "4",
 	})
-	list = append(list, childItem{
+	list = append(list, &childItem{
 		Name:   "55",
 		Parent: "4",
 		Id:     "5",
 	})
-	list = append(list, childItem{
+	list = append(list, &childItem{
 		Name:   "66",
 		Parent: "2",
 		Id:     "6",
 	})
 	res := ListToTree(list, "0")
-	t.Log(res)
+	resByte, _ := json.Marshal(res)
+	t.Log(string(resByte))
 }
