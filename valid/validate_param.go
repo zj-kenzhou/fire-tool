@@ -10,8 +10,8 @@ import (
 
 var (
 	validate      *validator.Validate
-	tableNameReg  = regexp.MustCompile("^[A-Z0-9_].{0,30}$")
-	tableFieldRef = regexp.MustCompile("^[a-z0-9_].{0,30}$")
+	tableNameReg  = regexp.MustCompile("^[A-Z0-9_]{0,30}$")
+	tableFieldRef = regexp.MustCompile("^[a-z0-9_]{0,30}$")
 )
 
 type ErrorResponse struct {
