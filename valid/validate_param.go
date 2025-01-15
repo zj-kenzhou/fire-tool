@@ -12,6 +12,7 @@ var (
 	validate      *validator.Validate
 	tableNameReg  = regexp.MustCompile("^[A-Z0-9_]{0,30}$")
 	tableFieldRef = regexp.MustCompile("^[a-z0-9_]{0,30}$")
+	nameStrRef    = regexp.MustCompile("^[a-zA-Z0-9_-]+$") // 大小写字母数字和下划线中划线
 )
 
 type ErrorResponse struct {
@@ -27,6 +28,10 @@ func ValidateTableName(fl validator.FieldLevel) bool {
 
 func ValidateField(fl validator.FieldLevel) bool {
 	return tableFieldRef.MatchString(fl.Field().String())
+}
+
+func ValidateNameStr(fl validator.FieldLevel) bool {
+	return nameStrRef.MatchString(fl.Field().String())
 }
 
 func ValidateStruct(param any) []*ErrorResponse {
@@ -63,6 +68,10 @@ func init() {
 		panic(err)
 	}
 	err = validateInstance.RegisterValidation("tableField", ValidateField, false)
+	if err != nil {
+		panic(err)
+	}
+	err = validateInstance.RegisterValidation("nameStr", ValidateNameStr, false)
 	if err != nil {
 		panic(err)
 	}
