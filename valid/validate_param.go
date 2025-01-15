@@ -17,7 +17,7 @@ var (
 type ErrorResponse struct {
 	FailedField string
 	Tag         string
-	Value       string
+	Value       any
 }
 
 func ValidateTableName(fl validator.FieldLevel) bool {
@@ -37,7 +37,7 @@ func ValidateStruct(param any) []*ErrorResponse {
 			var element ErrorResponse
 			element.FailedField = err.StructNamespace()
 			element.Tag = err.Tag()
-			element.Value = err.Param()
+			element.Value = err.Value()
 			errorResponses = append(errorResponses, &element)
 		}
 	}
