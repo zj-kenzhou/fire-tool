@@ -3,8 +3,8 @@ package datagroup
 import "github.com/spf13/cast"
 
 // Child 实现该接口的类型可以调用group方法和tree方法
-type Child interface {
-	GetParentId() string
+type Child[K comparable] interface {
+	GetParentId() K
 }
 
 // MapListGroup map按parenKey分组
@@ -26,8 +26,8 @@ func MapListGroup(list []map[string]any, parentKey string) map[string][]map[stri
 }
 
 // ListGroup 结构体分组
-func ListGroup[T Child](list []T) map[string][]T {
-	res := make(map[string][]T)
+func ListGroup[K comparable, T Child[K]](list []T) map[K][]T {
+	res := make(map[K][]T)
 	for _, item := range list {
 		key := item.GetParentId()
 		var resItem []T

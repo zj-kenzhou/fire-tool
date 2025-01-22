@@ -5,8 +5,8 @@ import (
 	"github.com/zj-kenzhou/go-col/cmap"
 )
 
-type Id interface {
-	GetId() string
+type Id[K comparable] interface {
+	GetId() K
 }
 
 // MapListIdMap map按key转map
@@ -35,8 +35,8 @@ func CMapListIdMap(list []cmap.Map[string, any], idKey string) map[string]cmap.M
 }
 
 // ListIdMap 结构体转成Id为Key的map
-func ListIdMap[T Id](list []T) map[string]T {
-	res := make(map[string]T)
+func ListIdMap[K comparable, T Id[K]](list []T) map[K]T {
+	res := make(map[K]T)
 	for _, item := range list {
 		key := item.GetId()
 		res[key] = item

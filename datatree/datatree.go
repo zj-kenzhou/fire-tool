@@ -9,9 +9,9 @@ import (
 	"github.com/zj-kenzhou/fire-tool/datamap"
 )
 
-type Tree interface {
-	datagroup.Child
-	datamap.Id
+type Tree[K comparable] interface {
+	datagroup.Child[K]
+	datamap.Id[K]
 	SetChild(self, t any)
 }
 
@@ -24,14 +24,14 @@ func MapListToTree(list []map[string]any, parentKey, idKey, childKey, rootId str
 }
 
 // ListToTree list转换成tree
-func ListToTree[T Tree](list []T, rootId string) []T {
+func ListToTree[K comparable, T Tree[K]](list []T, rootId K) []T {
 	groupMap := datagroup.ListGroup(list)
 	rootList := groupMap[rootId]
 	toTreeForStruct(&rootList, groupMap)
 	return rootList
 }
 
-func toTreeForStruct[T Tree](list *[]T, groupMap map[string][]T) {
+func toTreeForStruct[K comparable, T Tree[K]](list *[]T, groupMap map[K][]T) {
 	for index, item := range *list {
 		key := item.GetId()
 		children, ok := groupMap[key]
